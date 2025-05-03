@@ -1,6 +1,5 @@
-// src/components/todos/TodoSearch.js
 import React from 'react';
-import Input from '../common/Input'; // Use our reusable Input
+import Input from '../common/Input';
 
 function TodoSearch({ currentSearch, onSearchChange }) {
 
@@ -11,23 +10,16 @@ function TodoSearch({ currentSearch, onSearchChange }) {
   };
 
   return (
-    <div className="w-full md:w-auto"> {/* Control width */}
+    <div className="w-full md:w-auto">
       <Input
-        type="search" // Use search type for semantics and potential browser features (like clear button)
+        type="search"
         placeholder="Search tasks by title..."
         value={currentSearch}
         onChange={handleChange}
         name="search"
-        aria-label="Search tasks by title" // Accessibility label
-        className="w-full" // Ensure it takes full width of its container
+        aria-label="Search tasks by title"
+        className="w-full"
       />
-      {/*
-        Note: For performance on larger lists or frequent typing,
-        you might want to debounce this input. This involves delaying the
-        call to onSearchChange until the user stops typing for a short period.
-        This can be implemented using a custom hook or a library like lodash.debounce.
-        For now, we'll keep it simple and update on every keystroke.
-      */}
     </div>
   );
 }
