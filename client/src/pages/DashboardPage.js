@@ -41,7 +41,6 @@ function DashboardPage() {
   }, [filter, isLoading]); // Remove searchTerm from direct dependencies here
 
   // --- Debounced Fetch for Search ---
-  // This useEffect handles calling fetchTodos after the user stops typing
   useEffect(() => {
     // Set a timer to fetch todos after 500ms of inactivity
     const timerId = setTimeout(() => {
@@ -54,7 +53,6 @@ function DashboardPage() {
   }, [searchTerm, fetchTodos]); // Re-run effect when searchTerm or fetchTodos changes
 
   // --- Effect to Fetch Todos on Filter Change ---
-  // Separate effect for filter changes to avoid conflicts with search debounce
   useEffect(() => {
     // Fetch immediately when filter changes, using the current searchTerm
     fetchTodos(searchTerm);
@@ -128,7 +126,6 @@ function DashboardPage() {
                 currentSearch={searchTerm}
                 onSearchChange={setSearchTerm} // Pass the setSearchTerm function
             />
-             {/* Removed placeholder text */}
          </div>
       </div>
 
