@@ -1,4 +1,3 @@
-// src/pages/DashboardPage.js
 import React, { useState, useEffect, useCallback } from 'react';
 import todoService from '../services/todoService'; // Import the todo service
 import { useAuth } from '../context/AuthContext'; // To get user info if needed
