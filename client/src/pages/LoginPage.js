@@ -42,19 +42,14 @@ function LoginPage() {
     setLoading(true); // Set loading state
 
     try {
-      await login({ email, password }); // Call login function from context
-      // No need for manual navigation here, the useEffect above and PrivateRoute handle it
+      await login({ email, password });
       console.log('Login successful, context/route will handle redirect.');
-      // navigate('/dashboard'); // Context/PrivateRoute should handle this redirection
     } catch (err) {
       console.error('Login failed:', err);
       // Set error message based on response or default
       setError(err.msg || err.message || 'Login failed. Please check your credentials.');
       setLoading(false); // Reset loading state on error
     }
-    // Note: setLoading(false) is handled implicitly on success by the redirect/unmount
-    // or explicitly in the catch block. If the component doesn't unmount on success,
-    // you might need setLoading(false) outside the try-catch.
   };
 
   return (
