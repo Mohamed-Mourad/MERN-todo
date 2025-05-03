@@ -1,11 +1,10 @@
-// src/components/common/Button.js
 import React from 'react';
 
 // Simple reusable Button component with Tailwind styling
 function Button({ children, type = 'button', onClick, disabled = false, isLoading = false, className = '', ...props }) {
   // Base classes
   const baseClasses = "w-full px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 transition duration-200 ease-in-out";
-  // Variant classes (you can add more variants: danger, secondary, etc.)
+  // Variant classes 
   const primaryClasses = "bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500";
   // Disabled/loading classes
   const disabledClasses = "bg-gray-400 cursor-not-allowed";

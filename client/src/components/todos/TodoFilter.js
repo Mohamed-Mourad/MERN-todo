@@ -1,4 +1,3 @@
-// src/components/todos/TodoFilter.js
 import React from 'react';
 
 // Define the available filter options

@@ -1,13 +1,9 @@
-// src/components/todos/TodoList.js
 import React from 'react';
-// Import TodoItem
-import TodoItem from './TodoItem'; // Import the actual TodoItem component
+import TodoItem from './TodoItem';
 
-function TodoList({ todos = [], onUpdate, onDelete }) { // Default todos to empty array
+function TodoList({ todos = [], onUpdate, onDelete }) {
 
   if (todos.length === 0) {
-    // The "No tasks found" message is handled in DashboardPage,
-    // so we can return null here if the list is empty.
     return null;
   }
 

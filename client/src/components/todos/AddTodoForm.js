@@ -1,12 +1,11 @@
-// src/components/todos/AddTodoForm.js
 import React, { useState } from 'react';
-import Input from '../common/Input'; // Reusable Input
-import Button from '../common/Button'; // Reusable Button
+import Input from '../common/Input';
+import Button from '../common/Button';
 
-function AddTodoForm({ onAdd }) { // Receive onAdd function as a prop
+function AddTodoForm({ onAdd }) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [dueDate, setDueDate] = useState(''); // Store as string YYYY-MM-DD
+  const [dueDate, setDueDate] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -76,8 +75,6 @@ function AddTodoForm({ onAdd }) { // Receive onAdd function as a prop
         placeholder="Due Date (optional)"
         value={dueDate}
         onChange={(e) => setDueDate(e.target.value)}
-        // Add min attribute to prevent past dates if desired
-        // min={new Date().toISOString().split("T")[0]}
         disabled={isLoading}
       />
       <Button type="submit" disabled={isLoading} isLoading={isLoading}>

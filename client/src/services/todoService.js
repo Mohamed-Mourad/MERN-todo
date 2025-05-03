@@ -1,4 +1,3 @@
-// src/services/todoService.js
 import api from './api'; // Import the configured Axios instance
 
 /**

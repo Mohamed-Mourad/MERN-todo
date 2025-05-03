@@ -1,19 +1,14 @@
-// src/components/todos/TodoItem.js
 import React from 'react';
-import Button from '../common/Button'; // Using our reusable Button
+import Button from '../common/Button';
 
-// Helper function to format date (optional)
 const formatDate = (dateString) => {
   if (!dateString) return 'No due date';
   try {
-    // Create date object, assuming UTC if no timezone specified
     const date = new Date(dateString);
-    // Adjust for potential timezone offset if the dateString doesn't specify one
-    // This ensures we display the date as intended, not shifted by timezone
     const userTimezoneOffset = date.getTimezoneOffset() * 60000;
     const adjustedDate = new Date(date.getTime() + userTimezoneOffset);
 
-    return adjustedDate.toLocaleDateString(undefined, { // Use locale default format
+    return adjustedDate.toLocaleDateString(undefined, {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
@@ -37,7 +32,6 @@ function TodoItem({ todo, onUpdate, onDelete }) {
 
   // Handler for deletion
   const handleDelete = () => {
-    // Optional: Add confirmation dialog
     if (window.confirm(`Are you sure you want to delete task: "${title}"?`)) {
       onDelete(_id); // Call parent's delete handler
     }
@@ -86,7 +80,6 @@ function TodoItem({ todo, onUpdate, onDelete }) {
 
       {/* Action Buttons */}
       <div className="flex items-center space-x-2 flex-shrink-0 self-end md:self-center">
-         {/* Optional Edit Button Placeholder */}
          {/* <Button
            onClick={() => console.log("Edit clicked for", _id)}
            className="bg-yellow-500 hover:bg-yellow-600 focus:ring-yellow-400 text-white !w-auto px-3 py-1 text-sm" // !w-auto overrides default w-full
