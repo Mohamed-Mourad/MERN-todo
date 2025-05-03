@@ -8,13 +8,10 @@ import api from './api'; // Import the configured Axios instance
  */
 const getProfile = async () => {
   try {
-    // Make a GET request to the /users/me endpoint
     const response = await api.get('/users/me');
-    // Return the user profile data from the response
     return response.data;
   } catch (error) {
     console.error('Failed to fetch user profile:', error.response?.data || error.message);
-    // Re-throw error for the component to handle
     throw error.response?.data || new Error('Failed to fetch user profile');
   }
 };
@@ -30,13 +27,10 @@ const getProfile = async () => {
  */
 const updateProfile = async (updateData) => {
   try {
-    // Make a PUT request to the /users/me endpoint with the update data
     const response = await api.put('/users/me', updateData);
-    // Return the updated user profile data from the response
     return response.data;
   } catch (error) {
     console.error('Failed to update user profile:', error.response?.data || error.message);
-    // Re-throw error for the component to handle
     throw error.response?.data || new Error('Failed to update user profile');
   }
 };
