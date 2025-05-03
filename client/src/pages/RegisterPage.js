@@ -1,9 +1,9 @@
 // src/pages/RegisterPage.js
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext'; // Import useAuth hook
-import Input from '../components/common/Input'; // Import reusable Input
-import Button from '../components/common/Button'; // Import reusable Button
+import { useAuth } from '../context/AuthContext';
+import Input from '../components/common/Input';
+import Button from '../components/common/Button';
 
 function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -11,7 +11,7 @@ function RegisterPage() {
     email: '',
     phone: '',
     password: '',
-    confirmPassword: '', // For client-side validation
+    confirmPassword: '',
   });
   const [error, setError] = useState(''); // State for API errors
   const [loading, setLoading] = useState(false); // State for loading indicator
@@ -50,32 +50,24 @@ function RegisterPage() {
         setError('Password must be at least 6 characters long');
         return;
     }
-    // Add more validation if needed (e.g., phone format)
 
-    setLoading(true); // Set loading state
+    setLoading(true);
 
     try {
-      // Call register function from context (or authService directly if preferred)
       await register({ name, email, phone, password });
-      // If register function in context handles login, redirection will happen via useEffect
-      // If register function doesn't auto-login, redirect to login page
       console.log('Registration successful');
-      // Check if context automatically logs in or if we need manual redirect
-      if (!isAuthenticated) { // If context didn't log us in automatically
-          navigate('/login', { state: { message: 'Registration successful! Please log in.' } }); // Redirect to login with a message
+      if (!isAuthenticated) {
+          navigate('/login', { state: { message: 'Registration successful! Please log in.' } }); 
       }
-      // If context *does* auto-login, the useEffect above will handle the redirect to dashboard
     } catch (err) {
       console.error('Registration failed:', err);
-      // Set error message based on response or default
       setError(err.msg || err.message || 'Registration failed. Please try again.');
-      setLoading(false); // Reset loading state on error
+      setLoading(false);
     }
-     // setLoading(false); // Might need this if component doesn't unmount on success
   };
 
   return (
-    <div className="flex items-center justify-center min-h-[calc(100vh-150px)]"> {/* Adjust height as needed */}
+    <div className="flex items-center justify-center min-h-[calc(100vh-150px)]">
       <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
         <h1 className="text-2xl font-bold text-center text-gray-900">
           Create your Account
@@ -103,7 +95,7 @@ function RegisterPage() {
             required
           />
           <Input
-            type="tel" // Use tel type for phone numbers
+            type="tel"
             name="phone"
             placeholder="Phone Number"
             value={phone}
