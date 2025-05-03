@@ -10,14 +10,10 @@ import api from './api'; // Import the configured Axios instance
  */
 const getTodos = async (params = {}) => {
   try {
-    // Make a GET request to the /todos endpoint
-    // Axios automatically serializes the params object into query string
     const response = await api.get('/todos', { params });
-    // Return the array of todos from the response data
     return response.data;
   } catch (error) {
     console.error('Failed to fetch todos:', error.response?.data || error.message);
-    // Re-throw error for the component to handle
     throw error.response?.data || new Error('Failed to fetch todos');
   }
 };
@@ -32,13 +28,10 @@ const getTodos = async (params = {}) => {
  */
 const addTodo = async (todoData) => {
   try {
-    // Make a POST request to the /todos endpoint with the new todo data
     const response = await api.post('/todos', todoData);
-    // Return the created todo item from the response data
     return response.data;
   } catch (error) {
     console.error('Failed to add todo:', error.response?.data || error.message);
-    // Re-throw error for the component to handle
     throw error.response?.data || new Error('Failed to add todo');
   }
 };
@@ -55,13 +48,10 @@ const addTodo = async (todoData) => {
  */
 const updateTodo = async (id, updateData) => {
   try {
-    // Make a PUT request to the specific todo's endpoint (/todos/:id)
     const response = await api.put(`/todos/${id}`, updateData);
-    // Return the updated todo item from the response data
     return response.data;
   } catch (error) {
     console.error(`Failed to update todo ${id}:`, error.response?.data || error.message);
-    // Re-throw error for the component to handle
     throw error.response?.data || new Error(`Failed to update todo ${id}`);
   }
 };
@@ -73,13 +63,10 @@ const updateTodo = async (id, updateData) => {
  */
 const deleteTodo = async (id) => {
   try {
-    // Make a DELETE request to the specific todo's endpoint (/todos/:id)
     const response = await api.delete(`/todos/${id}`);
-    // Return the success message (e.g., { msg: 'Todo removed successfully' })
     return response.data;
   } catch (error) {
     console.error(`Failed to delete todo ${id}:`, error.response?.data || error.message);
-    // Re-throw error for the component to handle
     throw error.response?.data || new Error(`Failed to delete todo ${id}`);
   }
 };
