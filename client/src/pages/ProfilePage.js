@@ -1,17 +1,17 @@
 // src/pages/ProfilePage.js
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../context/AuthContext'; // To get user data
-import userService from '../services/userService'; // To update profile
-import Input from '../components/common/Input'; // Reusable Input
-import Button from '../components/common/Button'; // Reusable Button
+import { useAuth } from '../context/AuthContext';
+import userService from '../services/userService';
+import Input from '../components/common/Input';
+import Button from '../components/common/Button';
 
 function ProfilePage() {
-  const { user, isLoading: authLoading, fetchUserProfile } = useAuth(); // Get user, loading status, and refetch function from context
-  const [isEditing, setIsEditing] = useState(false); // State to toggle edit mode
-  const [formData, setFormData] = useState({ name: '', email: '', phone: '' }); // State for form data
-  const [isLoading, setIsLoading] = useState(false); // Loading state for profile update
-  const [error, setError] = useState(null); // Error state for profile update
-  const [successMessage, setSuccessMessage] = useState(''); // Success message state
+  const { user, isLoading: authLoading, fetchUserProfile } = useAuth();
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState({ name: '', email: '', phone: '' });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState('');
 
   // Effect to initialize form data when user data is loaded or changes
   useEffect(() => {
@@ -22,7 +22,7 @@ function ProfilePage() {
         phone: user.phone || '',
       });
     }
-  }, [user]); // Dependency: user object from context
+  }, [user]);
 
   // Handle input changes in the form
   const handleChange = (e) => {
@@ -57,10 +57,6 @@ function ProfilePage() {
       setSuccessMessage('Profile updated successfully!');
       setIsEditing(false); // Exit edit mode on success
 
-      // Option 1: Update context state directly (if context provides a setter)
-      // updateUserContext(updatedUser); // Assuming updateUserContext exists in useAuth()
-
-      // Option 2: Trigger a refetch of user profile in context
       await fetchUserProfile(); // Re-fetch to update context with latest data
 
     } catch (err) {
@@ -184,7 +180,7 @@ function ProfilePage() {
                 type="button"
                 onClick={handleToggleEdit}
                 disabled={isLoading}
-                className="!bg-gray-500 hover:!bg-gray-600 focus:!ring-gray-400" // Override primary button style
+                className="!bg-gray-500 hover:!bg-gray-600 focus:!ring-gray-400" 
               >
                 Cancel
               </Button>
