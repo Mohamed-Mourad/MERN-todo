@@ -1,10 +1,8 @@
-// routes/auth.js
-
 const express = require('express');
 const router = express.Router();
-const User = require('../models/User'); // Import the User model
-const bcrypt = require('bcryptjs'); // Import bcryptjs for password comparison
-const jwt = require('jsonwebtoken'); // Import jsonwebtoken for generating tokens
+const User = require('../models/User');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 // --- Registration Route ---
 // @route   POST /api/auth/register
@@ -90,7 +88,6 @@ router.post('/login', async (req, res) => {
     }
 
     // --- Compare entered password with stored hashed password ---
-    // Use the comparePassword method we defined in the User model
     const isMatch = await user.comparePassword(password);
 
     // --- Check if password matches ---
@@ -102,19 +99,18 @@ router.post('/login', async (req, res) => {
     const payload = {
       user: {
         id: user.id // Use the user's MongoDB ID
-        // Add other non-sensitive info if needed
       }
     };
 
     // Sign the token
     jwt.sign(
       payload,
-      process.env.JWT_SECRET, // Your secret key from .env
+      process.env.JWT_SECRET,
       { expiresIn: '1h' }, // Token expiration time
       (err, token) => {
         if (err) throw err; // Handle potential errors during signing
         // Send the token back to the client
-        res.status(200).json({ token }); // Respond with status 200 (OK) and the token
+        res.status(200).json({ token });
       }
     );
 
@@ -125,5 +121,5 @@ router.post('/login', async (req, res) => {
 });
 
 
-module.exports = router; // Export the router
+module.exports = router;
 

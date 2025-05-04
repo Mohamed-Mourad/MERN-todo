@@ -1,7 +1,5 @@
-// models/User.js
-
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs'); // Import bcryptjs
+const bcrypt = require('bcryptjs');
 const Schema = mongoose.Schema;
 
 // Define the User Schema
@@ -71,8 +69,6 @@ UserSchema.pre('save', async function(next) {
 // --- Method to compare entered password with hashed password ---
 // We add this method to the UserSchema so it's available on user instances
 UserSchema.methods.comparePassword = async function(enteredPassword) {
-  // 'this.password' refers to the hashed password stored in the database for this user
-  // We need to explicitly select the password field when finding the user if it's set to 'select: false'
   return await bcrypt.compare(enteredPassword, this.password);
 };
 

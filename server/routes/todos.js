@@ -1,11 +1,9 @@
-// routes/todos.js
-
 const express = require('express');
 const router = express.Router();
-const authMiddleware = require('../middleware/auth'); // Import auth middleware
-const Todo = require('../models/Todo'); // Import Todo model
-const User = require('../models/User'); // Import User model (optional, maybe needed for validation)
-const { body, validationResult, query } = require('express-validator'); // For request validation
+const authMiddleware = require('../middleware/auth');
+const Todo = require('../models/Todo');
+const User = require('../models/User');
+const { body, validationResult, query } = require('express-validator');
 
 // --- Create a new To-Do Item ---
 // @route   POST /api/todos
@@ -14,12 +12,12 @@ const { body, validationResult, query } = require('express-validator'); // For r
 router.post(
     '/',
     [
-        authMiddleware, // Protect the route
+        authMiddleware,
         // Validation rules using express-validator
         body('title', 'Title is required').not().isEmpty().trim(),
         body('description', 'Description must be a string').optional().isString().trim(),
         body('status', 'Status must be either pending or completed').optional().isIn(['pending', 'completed']),
-        body('dueDate', 'Due date must be a valid date').optional({ checkFalsy: true }).isISO8601().toDate(), // checkFalsy allows empty string or null
+        body('dueDate', 'Due date must be a valid date').optional({ checkFalsy: true }).isISO8601().toDate(),
     ],
     async (req, res) => {
         // Check for validation errors
@@ -61,8 +59,7 @@ router.post(
 router.get(
     '/',
     [
-        authMiddleware, // Protect the route
-        // Optional validation for query parameters
+        authMiddleware,
         query('status', 'Status filter must be pending or completed').optional().isIn(['pending', 'completed']),
         query('search', 'Search term must be a string').optional().isString().trim()
     ],
@@ -84,7 +81,7 @@ router.get(
 
             // Apply search filter if provided (case-insensitive search on title)
             if (req.query.search) {
-                // Use regex for partial, case-insensitive matching
+                // Regex for partial, case-insensitive matching
                 queryConditions.title = { $regex: req.query.search, $options: 'i' };
             }
 
@@ -109,8 +106,7 @@ router.get(
 router.put(
     '/:id',
     [
-        authMiddleware, // Protect the route
-        // Validation rules for update fields
+        authMiddleware,
         body('title', 'Title cannot be empty').optional().not().isEmpty().trim(),
         body('description', 'Description must be a string').optional().isString().trim(),
         body('status', 'Status must be either pending or completed').optional().isIn(['pending', 'completed']),
@@ -153,18 +149,15 @@ router.put(
 
             // --- Authorization Check ---
             // Ensure the logged-in user owns this todo item
-            // Convert ObjectId to string for comparison
             if (todo.user.toString() !== req.user.id) {
                 return res.status(401).json({ msg: 'User not authorized to modify this todo' });
             }
 
             // --- Perform the update ---
-            // Use findByIdAndUpdate with $set to update only provided fields
-            // { new: true } returns the modified document
             todo = await Todo.findByIdAndUpdate(
                 todoId,
                 { $set: updateFields },
-                { new: true, runValidators: true } // runValidators ensures schema validation on update
+                { new: true, runValidators: true }
             );
 
             // Respond with the updated todo item
@@ -210,7 +203,7 @@ router.delete('/:id', authMiddleware, async (req, res) => {
         }
 
         // --- Perform the deletion ---
-        await Todo.findByIdAndDelete(todoId); // Use findByIdAndDelete
+        await Todo.findByIdAndDelete(todoId);
 
         // Respond with success message
         res.json({ msg: 'Todo removed successfully' });
@@ -226,5 +219,5 @@ router.delete('/:id', authMiddleware, async (req, res) => {
 });
 
 
-module.exports = router; // Export the router
+module.exports = router;
 

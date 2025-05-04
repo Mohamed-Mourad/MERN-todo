@@ -1,9 +1,7 @@
-// routes/users.js
-
 const express = require('express');
 const router = express.Router();
-const authMiddleware = require('../middleware/auth'); // Import the authentication middleware
-const User = require('../models/User'); // Import the User model
+const authMiddleware = require('../middleware/auth');
+const User = require('../models/User');
 const { body, validationResult } = require('express-validator');
 
 // --- Get Logged-in User's Profile ---
@@ -12,12 +10,10 @@ const { body, validationResult } = require('express-validator');
 // @access  Private (requires token)
 router.get('/me', authMiddleware, async (req, res) => {
   try {
-    // req.user is attached by the authMiddleware and contains { id: '...' }
-    // Find the user by ID from the token, exclude the password field
+
     const user = await User.findById(req.user.id).select('-password');
 
     if (!user) {
-      // This case should ideally not happen if token is valid, but good practice to check
       return res.status(404).json({ msg: 'User not found' });
     }
 
@@ -38,14 +34,12 @@ router.get('/me', authMiddleware, async (req, res) => {
 router.put(
     '/me',
     [
-        authMiddleware, // Apply auth middleware first
-        // Optional: Add express-validator checks for the fields being updated
+        authMiddleware, 
         body('name', 'Name is required').optional().not().isEmpty(),
         body('email', 'Please include a valid email').optional().isEmail(),
         body('phone', 'Phone number is required').optional().not().isEmpty(),
     ],
     async (req, res) => {
-        // Check for validation errors (if using express-validator)
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
@@ -84,11 +78,9 @@ router.put(
 
             // --- Update the user ---
             // Use findByIdAndUpdate to update the user document
-            // { new: true } returns the updated document
-            // .select('-password') ensures the password is not returned
             user = await User.findByIdAndUpdate(
                 req.user.id,
-                { $set: userFields }, // Use $set to update only provided fields
+                { $set: userFields }, // $set to update only provided fields
                 { new: true, runValidators: true } // runValidators ensures schema validations are checked on update
             ).select('-password');
 
@@ -107,5 +99,5 @@ router.put(
 );
 
 
-module.exports = router; // Export the router
+module.exports = router;
 

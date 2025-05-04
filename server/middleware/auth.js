@@ -1,7 +1,5 @@
-// middleware/auth.js
-
 const jwt = require('jsonwebtoken');
-const User = require('../models/User'); // Optional: If you want to attach the full user object
+const User = require('../models/User');
 
 // Middleware function to verify JWT token
 const authMiddleware = async (req, res, next) => {
@@ -34,13 +32,6 @@ const authMiddleware = async (req, res, next) => {
     // The payload typically contains { user: { id: '...' } } based on how we created it
     if (decoded.user && decoded.user.id) {
         req.user = decoded.user; // Attach the user payload { id: '...' } to req
-
-        // Optional: If you need the full user object on req for subsequent route handlers
-        // const user = await User.findById(decoded.user.id).select('-password'); // Exclude password
-        // if (!user) {
-        //     return res.status(401).json({ msg: 'User not found, authorization denied.' });
-        // }
-        // req.user = user; // Attach the full user document (without password)
 
         next(); // Call the next middleware or route handler
     } else {

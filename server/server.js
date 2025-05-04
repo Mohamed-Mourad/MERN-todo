@@ -7,7 +7,7 @@ const cors = require('cors');
 // --- Import Route Files ---
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
-const todoRoutes = require('./routes/todos'); // Import the todo routes
+const todoRoutes = require('./routes/todos');
 
 // Initialize Express app
 const app = express();
@@ -40,9 +40,9 @@ const connectDB = async () => {
 };
 
 // --- Use API Routes ---
-app.use('/api/auth', authRoutes); // Mount auth routes under /api/auth prefix
-app.use('/api/users', userRoutes); // Mount user routes under /api/users prefix
-app.use('/api/todos', todoRoutes); // Mount todo routes under /api/todos prefix
+app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/todos', todoRoutes);
 
 // Basic Route for testing server root
 app.get('/', (req, res) => {
@@ -64,6 +64,6 @@ const startServer = async () => {
 // Start the server process
 startServer();
 
-// Export the app (optional, useful for testing)
+// Export the app
 module.exports = app;
 
