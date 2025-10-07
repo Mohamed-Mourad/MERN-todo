@@ -25,7 +25,19 @@ jobs:
           node-version: 20
       - run: echo "✅ Node.js v20 environment ready."
 
-      # Step 3 — Install backend dependencies
+      # Step 3 — Create .env file for backend
+      - name: Create .env file in /server
+        run: |
+          echo "Creating .env file in /server..."
+          cd server
+          echo "PORT=${PORT}" >> .env
+          echo "MONGO_URI=${MONGO_URI}" >> .env
+          echo "JWT_SECRET=${JWT_SECRET}" >> .env
+          echo "✅ .env file created successfully in $(pwd):"
+          cat .env | sed 's/\(MONGO_URI=\).*/\1[REDACTED]/' | sed 's/\(JWT_SECRET=\).*/\1[REDACTED]/'
+          echo "--------------------------------------------"
+
+      # Step 4 — Install backend dependencies
       - name: Install backend dependencies
         run: |
           echo "Installing backend dependencies from /server..."
@@ -33,7 +45,7 @@ jobs:
           npm install
           echo "✅ Backend dependencies installed."
 
-      # Step 4 — Run backend tests
+      # Step 5 — Run backend tests
       - name: Run backend tests
         run: |
           echo "Running backend tests..."
@@ -41,7 +53,7 @@ jobs:
           npm test --if-present || echo "⚠️ No backend tests found or some failed. Please verify."
           echo "✅ Backend test step finished."
 
-      # Step 5 — Install frontend dependencies
+      # Step 6 — Install frontend dependencies
       - name: Install frontend dependencies
         run: |
           echo "Installing frontend dependencies from /client..."
@@ -49,7 +61,7 @@ jobs:
           npm install
           echo "✅ Frontend dependencies installed."
 
-      # Step 6 — Build frontend for production
+      # Step 7 — Build frontend for production
       - name: Build production frontend
         run: |
           echo "Building production-ready React app..."
@@ -57,35 +69,35 @@ jobs:
           npm run build
           echo "✅ Frontend build completed. Artifacts located in /client/build."
 
-      # Step 7 — Build production Docker image
+      # Step 8 — Build production Docker image
       - name: Build Docker image
         run: |
           echo "Building Docker image for production..."
           docker build -t ${{ secrets.DOCKER_USERNAME }}/mern-todo:latest .
           echo "✅ Docker image built successfully: ${{ secrets.DOCKER_USERNAME }}/mern-todo:latest"
 
-      # Step 8 — Login to Docker Hub (or GHCR)
+      # Step 9 — Login to Docker Hub (or GHCR)
       - name: Login to Docker registry
         run: |
           echo "Logging into Docker Hub..."
           echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
           echo "✅ Logged into Docker Hub successfully."
 
-      # Step 9 — Push Docker image to registry
+      # Step 10 — Push Docker image to registry
       - name: Push Docker image
         run: |
           echo "Pushing Docker image to Docker Hub..."
           docker push ${{ secrets.DOCKER_USERNAME }}/mern-todo:latest
           echo "✅ Docker image pushed successfully."
 
-      # Step 10 — Trigger deployment on Render
+      # Step 11 — Trigger deployment on Render
       - name: Trigger Render deployment
         run: |
           echo "Triggering deployment on Render using Deploy Hook..."
           curl -X POST "https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}"
           echo "✅ Render deployment request sent."
 
-      # Step 11 — Confirm completion
+      # Step 12 — Confirm completion
       - name: Deployment Summary
         run: |
           echo "---------------------------------------"
