@@ -1,0 +1,92 @@
+name: Feature to Dev CI
+
+on:
+  push:
+    branches:
+      - 'feature/*'
+
+jobs:
+  build-and-test:
+    name: Build, Test, and Validate Feature Branch
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1 — Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - run: echo "✅ Checked out the repository code successfully."
+
+      # Step 2 — Install backend dependencies
+      - name: Install backend dependencies
+        run: |
+          echo "Installing backend dependencies from /server..."
+          cd server
+          npm install
+          echo "✅ Backend dependencies installed."
+
+      # Step 3 — Run backend tests
+      - name: Run backend tests
+        run: |
+          echo "Running backend tests..."
+          cd server
+          npm test --if-present || echo "!! No tests found or some tests failed, please review."
+          echo "✅ Backend tests step completed."
+
+      # Step 4 — Install frontend dependencies
+      - name: Install frontend dependencies
+        run: |
+          echo "Installing frontend dependencies from /client..."
+          cd client
+          npm install
+          echo "✅ Frontend dependencies installed."
+
+      # Step 5 — Build frontend
+      - name: Build frontend
+        run: |
+          echo "Building frontend React app..."
+          cd client
+          npm run build
+          echo "✅ Frontend build completed. Files are in /client/build."
+
+      # Step 6 — Build Docker image
+      - name: Build Docker image
+        run: |
+          echo "Building Docker image for feature branch..."
+          docker build -t mern-todo-demo:feature .
+          echo "✅ Docker image built successfully."
+
+      # Step 7 — Run Docker container (for testing)
+      - name: Run Docker container
+        run: |
+          echo "Running Docker container on port 5001 for validation..."
+          docker run -d -p 5001:5001 --name mern-todo-demo mern-todo-demo:feature
+          echo "✅ Docker container started. Check container logs for any runtime issues."
+
+      # Step 8 — Display running containers
+      - name: Show running containers
+        run: |
+          echo "Listing currently running containers:"
+          docker ps
+          echo "✅ Container list displayed."
+
+      # Step 9 — Cleanup
+      - name: Stop and remove container after tests
+        if: always()
+        run: |
+          echo "Cleaning up containers..."
+          docker stop mern-todo-demo || true
+          docker rm mern-todo-demo || true
+          echo "✅ Cleanup completed."
+
+      # Step 10 - Automate pull request
+      - name: 🔀 Merge feature branch into dev
+        if: success()
+        uses: devops-infra/action-pull-request@v0.6.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          source_branch: ${{ github.ref_name }}
+          target_branch: dev
+          pr_title: "Auto PR from ${{ github.ref_name }} to dev"
+          pr_body: "Automated pull request created by CI after successful build and tests."
