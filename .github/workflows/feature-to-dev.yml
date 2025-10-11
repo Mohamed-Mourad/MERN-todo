@@ -74,6 +74,5 @@ jobs:
           
           gh pr merge ${{ steps.get_branch.outputs.branch_name }} \
             --merge \
-            --delete-branch \
             --admin
           echo "✅ PR merged and feature branch deleted."
