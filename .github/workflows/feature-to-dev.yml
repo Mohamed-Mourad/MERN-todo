@@ -55,6 +55,11 @@ jobs:
         id: get_branch
         run: echo "branch_name=${GITHUB_REF#refs/heads/}" >> $GITHUB_OUTPUT
       
+      # Step 5.5 - Fetch dev branch
+      - name: Fetch dev branch
+        run: |
+          git fetch origin dev:dev
+      
       # Step 6 - Create and Merge Pull Request using GitHub CLI
       - name: Create and Merge PR to dev
         env:
