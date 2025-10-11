@@ -55,7 +55,7 @@ function LoginPage() {
     <div className="flex items-center justify-center min-h-[calc(100vh-150px)]"> {/* Adjust height as needed */}
       <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
         <h1 className="text-2xl font-bold text-center text-gray-900">
-          Login to your Account
+          Login to your Account TEST CI/CD
         </h1>
         <form className="space-y-6" onSubmit={onSubmit}>
           {error && (
