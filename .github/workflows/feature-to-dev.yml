@@ -45,7 +45,7 @@ jobs:
           npm test --if-present
       - name: Install, Build, and Test Frontend
         run: |
-          cd frontend
+          cd client
           npm install
           npm run build # A build can catch errors even if you don't have tests
           # npm test --if-present # Uncomment if you have frontend tests
