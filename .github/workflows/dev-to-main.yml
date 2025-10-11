@@ -1,108 +1,53 @@
-name: Dev to Main CD
+# .github/workflows/dev-to-main.yml
+name: Validate Dev Branch before Main Merge
 
 on:
-  push:
+  pull_request:
     branches:
-      - main  # Only runs when changes are merged into main
+      - main # This workflow runs only on PRs targeting the 'main' branch
+    types: [opened, synchronize] # Runs when PR is opened or new commits are pushed to it
 
 jobs:
-  deploy:
-    name: Build, Package, and Deploy to Production
+  integration-test:
+    name: Run Integration Tests on Dev Branch
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1 — Checkout repository
+      # Step 1 — Checkout the code from the PR
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - run: echo "✅ Repository checked out successfully."
 
-      # Step 2 — Set up Node.js environment
+      # Step 2 — Set up Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
-      - run: echo "✅ Node.js v20 environment ready."
 
-      # Step 3 — Create .env file for backend
-      - name: Create .env file in /server
+      # Step 3 — Create .env file for backend tests 🔑
+      # This ensures tests run with the necessary environment variables
+      - name: Create .env file for backend
         run: |
           echo "Creating .env file in /server..."
           cd server
-          echo "PORT=${PORT}" >> .env
-          echo "MONGO_URI=${MONGO_URI}" >> .env
-          echo "JWT_SECRET=${JWT_SECRET}" >> .env
-          echo "✅ .env file created successfully in $(pwd):"
-          cat .env | sed 's/\(MONGO_URI=\).*/\1[REDACTED]/' | sed 's/\(JWT_SECRET=\).*/\1[REDACTED]/'
-          echo "--------------------------------------------"
-
-      # Step 4 — Install backend dependencies
-      - name: Install backend dependencies
+          echo "MONGO_URI=${{ secrets.MONGO_URI_TEST }}" >> .env # Use a test DB if you have one
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+          echo "✅ .env file created for testing."
+      
+      # Step 4 — Install and Test Backend
+      - name: Install and Test Backend
         run: |
-          echo "Installing backend dependencies from /server..."
+          echo "Running backend integration tests..."
           cd server
           npm install
-          echo "✅ Backend dependencies installed."
+          npm test --if-present
+          echo "✅ Backend tests passed."
 
-      # Step 5 — Run backend tests
-      - name: Run backend tests
+      # Step 5 — Install, Build, and Test Frontend
+      - name: Install, Build, and Test Frontend
         run: |
-          echo "Running backend tests..."
-          cd server
-          npm test --if-present || echo "⚠️ No backend tests found or some failed. Please verify."
-          echo "✅ Backend test step finished."
-
-      # Step 6 — Install frontend dependencies
-      - name: Install frontend dependencies
-        run: |
-          echo "Installing frontend dependencies from /client..."
-          cd client
+          echo "Running frontend integration tests..."
+          cd frontend
           npm install
-          echo "✅ Frontend dependencies installed."
-
-      # Step 7 — Build frontend for production
-      - name: Build production frontend
-        run: |
-          echo "Building production-ready React app..."
-          cd client
           npm run build
-          echo "✅ Frontend build completed. Artifacts located in /client/build."
-
-      # Step 8 — Build production Docker image
-      - name: Build Docker image
-        run: |
-          echo "Building Docker image for production..."
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/mern-todo:latest .
-          echo "✅ Docker image built successfully: ${{ secrets.DOCKER_USERNAME }}/mern-todo:latest"
-
-      # Step 9 — Login to Docker Hub (or GHCR)
-      - name: Login to Docker registry
-        run: |
-          echo "Logging into Docker Hub..."
-          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-          echo "✅ Logged into Docker Hub successfully."
-
-      # Step 10 — Push Docker image to registry
-      - name: Push Docker image
-        run: |
-          echo "Pushing Docker image to Docker Hub..."
-          docker push ${{ secrets.DOCKER_USERNAME }}/mern-todo:latest
-          echo "✅ Docker image pushed successfully."
-
-      # Step 11 — Trigger deployment on Render
-      - name: Trigger Render deployment
-        run: |
-          echo "Triggering deployment on Render using Deploy Hook..."
-          curl -X POST "https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}"
-          echo "✅ Render deployment request sent."
-
-      # Step 12 — Confirm completion
-      - name: Deployment Summary
-        run: |
-          echo "---------------------------------------"
-          echo "✅ Deployment pipeline completed!"
-          echo "Branch: main"
-          echo "Image: ${{ secrets.DOCKER_USERNAME }}/mern-todo:latest"
-          echo "Render Service: srv-${{ secrets.RENDER_SERVICE_ID }}"
-          echo "---------------------------------------"
+          # npm test --if-present # Uncomment if you have frontend tests
+          echo "✅ Frontend validation passed."
